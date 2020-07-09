@@ -315,6 +315,17 @@ class _cublas_version_req(object):
         else:
             return f_new
 
+OPTIONAL = ["cublasSgetrsBatched",
+            "cublasDgetrsBatched",
+            "cublasCgetrsBatched",
+            "cublasZgetrsBatched" ]
+
+for name in OPTIONAL:
+    if getattr( _libcublas, name, None ) is None:
+        def f(*a,**k):
+            raise NotImplementedError('CUBLAS '+self.vs+' does not contain '+name)
+        setattr(_libcublas, name, f )
+
 _libcublas.cublasSetStream_v2.restype = int
 _libcublas.cublasSetStream_v2.argtypes = [_types.handle,
                                           _types.stream]
